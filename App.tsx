@@ -8,13 +8,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  Alert,
   ActivityIndicator,
   ScrollView,
+  RefreshControl,
 } from 'react-native';
 import axios from 'axios';
 import RNFS from 'react-native-fs';
-import CustomCarousel from './Carousel';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const {width} = Dimensions.get('window');
 const numColumns = 2;
@@ -26,6 +26,9 @@ const App = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
     fetchImages();
@@ -44,10 +47,17 @@ const App = () => {
       setCategories(Array.from(categorySet));
 
       setIsLoading(false);
+      setRefreshing(false);
     } catch (error) {
       console.error('Error fetching images:', error);
       setIsLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchImages();
   };
 
   const downloadImage = async (url, filename) => {
@@ -59,10 +69,12 @@ const App = () => {
       });
 
       await ret.promise;
-      Alert.alert('Download Complete', `Image downloaded to ${downloadDest}`);
+      setAlertMessage(`Image downloaded to ${downloadDest}`);
+      setShowAlert(true);
     } catch (error) {
       console.error('Error downloading image:', error);
-      Alert.alert('Error', 'Error downloading image');
+      setAlertMessage('Error downloading image');
+      setShowAlert(true);
     }
   };
 
@@ -136,13 +148,29 @@ const App = () => {
             keyExtractor={item => item._id}
             numColumns={numColumns}
             contentContainerStyle={styles.list}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          />
+          <AwesomeAlert
+            show={showAlert}
+            showProgress={false}
+            title="Download Complete"
+            message={alertMessage}
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showConfirmButton={true}
+            confirmText="OK"
+            confirmButtonColor="#007BFF"
+            onConfirmPressed={() => {
+              setShowAlert(false);
+            }}
           />
         </View>
       )}
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
