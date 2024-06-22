@@ -2,8 +2,9 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 
 # Getting Started
-![mockup](https://github.com/Sourav-pixel/AppWallpaper/assets/84978182/464aee37-2b9c-470e-94c8-8084814d64c1)
 
+
+![mockup](https://github.com/Sourav-pixel/AppWallpaper/assets/84978182/97387746-2ce3-451c-9e50-b1030c93fc83)
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
